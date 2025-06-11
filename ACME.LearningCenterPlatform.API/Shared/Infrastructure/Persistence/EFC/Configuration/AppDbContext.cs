@@ -53,13 +53,6 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
                 n.Property(p=> p.LastName).HasColumnName("LastName");
             });
         
-        // Relationship Profile has many Orders
-        builder.Entity<Profile>()
-            .HasMany(p => p.Orders)
-            .WithOne(o => o.Profile)
-            .HasForeignKey(o => o.ProfileId)
-            .OnDelete(DeleteBehavior.Restrict);
-            
         
         
         builder.UseSnakeCaseNamingConvention();

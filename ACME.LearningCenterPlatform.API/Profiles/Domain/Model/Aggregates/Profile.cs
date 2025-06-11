@@ -8,7 +8,6 @@ public partial class Profile
     public PersonName Name { get; private set; }
     public EmailAddress Email { get; private set; }
     public StreetAddress Address { get; private set; }
-    public IEnumerable<Order> Orders { get; private set; }
 
     public string FullName => Name.FullName;
     public string EmailAddress => Email.Address;
@@ -19,6 +18,5 @@ public partial class Profile
         Name = new PersonName();
         Email = new EmailAddress();
         Address = new StreetAddress();
-        Orders = new List<Order>();
     }
 }
