@@ -1,5 +1,7 @@
+using ACME.LearningCenterPlatform.API.Shared.Domain.Repositories;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -84,7 +86,35 @@ builder.Services.AddSwaggerGen(options =>
     options.EnableAnnotations();
 });
 
+// Dependency Injection
+
+// Shared
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Publishing
+
+// Profiles
+
+// IAM
+
+
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    
+    context.Database.EnsureCreated();
+}
+
+// Use Swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 
 // Apply CORS Policy
