@@ -1,6 +1,7 @@
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,55 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     else if (builder.Environment.IsProduction())
         options.UseMySQL(connectionString)
             .LogTo(Console.WriteLine, LogLevel.Error);
+});
+
+// Swagger/OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = "ACME.LearningCenterPlatform.API",
+            Version = "v1",
+            Description = "ACME.LearningCenterPlatform.API",
+            TermsOfService = new Uri("https://acme-learning.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "ACME Studios",
+                Email = "contact@me.com"
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Apache 2.0",
+                Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
+            }
+        });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            []
+        }
+    });
+    options.EnableAnnotations();
 });
 
 var app = builder.Build();
