@@ -1,4 +1,5 @@
-using ACME.LearningCenterPlatform.API.Profiles.Domain.Model.Aggregates;
+using ACME.LearningCenterPlatform.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using ACME.LearningCenterPlatform.API.Publishing.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -41,19 +42,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
    protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder); 
+       
+        // Profiles Configuration
+        builder.ApplyProfilesConfiguration();
         
-        // Profiles Context
-        builder.Entity<Profile>().HasKey(x => x.Id);
-        builder.Entity<Profile>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Profile>().OwnsOne(x => x.Name,
-            n =>
-            {
-                n.WithOwner().HasForeignKey("Id");
-                n.Property(p=> p.FirstName).HasColumnName("FirstName");
-                n.Property(p=> p.LastName).HasColumnName("LastName");
-            });
-        
-        
+        // Publishing Configuration
+        builder.ApplyPublishingConfiguration();
         
         builder.UseSnakeCaseNamingConvention();
     }
