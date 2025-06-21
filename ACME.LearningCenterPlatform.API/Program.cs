@@ -1,10 +1,13 @@
-using ACME.LearningCenterPlatform.API.Profiles.Application.ACL;
 using ACME.LearningCenterPlatform.API.Profiles.Application.Internal.CommandServices;
 using ACME.LearningCenterPlatform.API.Profiles.Application.Internal.QueryServices;
 using ACME.LearningCenterPlatform.API.Profiles.Domain.Repositories;
 using ACME.LearningCenterPlatform.API.Profiles.Domain.Services;
 using ACME.LearningCenterPlatform.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
-using ACME.LearningCenterPlatform.API.Profiles.Interfaces.ACL;
+using ACME.LearningCenterPlatform.API.Publishing.Application.Internal.CommandServices;
+using ACME.LearningCenterPlatform.API.Publishing.Application.Internal.QueryServices;
+using ACME.LearningCenterPlatform.API.Publishing.Domain.Repositories;
+using ACME.LearningCenterPlatform.API.Publishing.Domain.Services;
+using ACME.LearningCenterPlatform.API.Publishing.Infrastructure.Persistence.EFC.Repositories;
 using ACME.LearningCenterPlatform.API.Shared.Domain.Repositories;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using ACME.LearningCenterPlatform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -19,17 +22,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 // Add CORS Policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllPolicy", 
+    options.AddPolicy("AllowAllPolicy",
         policy => policy.AllowAnyOrigin()
-                                    .AllowAnyMethod()
-                                    .AllowAnyHeader()
-        );
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (connectionString == null) throw new InvalidOperationException("Connection string not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -44,21 +47,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             .LogTo(Console.WriteLine, LogLevel.Error);
 });
 
-// Swagger/OpenAPI
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    
     options.SwaggerDoc("v1",
         new OpenApiInfo
         {
             Title = "ACME.LearningCenterPlatform.API",
             Version = "v1",
-            Description = "ACME.LearningCenterPlatform.API",
-            TermsOfService = new Uri("https://acme-learning.com/terms"),
+            Description = "ACME Learning Center Platform API",
+            TermsOfService = new Uri("https://acme-learning.com/tos"),
             Contact = new OpenApiContact
             {
                 Name = "ACME Studios",
-                Email = "contact@me.com"
+                Email = "contact@acme.com"
             },
             License = new OpenApiLicense
             {
@@ -69,13 +73,12 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme.",
+        Description = "Please enter token",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
         Scheme = "bearer"
     });
-    
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -87,7 +90,7 @@ builder.Services.AddSwaggerGen(options =>
                     Type = ReferenceType.SecurityScheme
                 }
             },
-            []
+            Array.Empty<string>()
         }
     });
     options.EnableAnnotations();
@@ -95,42 +98,47 @@ builder.Services.AddSwaggerGen(options =>
 
 // Dependency Injection
 
-// Shared
+// Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Publishing
+// Publishing Bounded Context
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ITutorialRepository, TutorialRepository>();
+builder.Services.AddScoped<ICategoryCommandService, CategoryCommandService>();
+builder.Services.AddScoped<ICategoryQueryService, CategoryQueryService>();
+builder.Services.AddScoped<ITutorialCommandService, TutorialCommandService>();
+builder.Services.AddScoped<ITutorialQueryService, TutorialQueryService>();
 
-// Profiles
+// Profiles Bounded Context Dependency Injection Configuration
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IProfileCommandService, ProfileCommandService>();
 builder.Services.AddScoped<IProfileQueryService, ProfileQueryService>();
-builder.Services.AddScoped<IProfilesContextFacade, ProfilesContextFacade>();
-// IAM
-
 
 
 var app = builder.Build();
 
+// Verify if the database exists and create it if it doesn't
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
-    
+
     context.Database.EnsureCreated();
 }
 
-// Use Swagger
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
 // Apply CORS Policy
 app.UseCors("AllowAllPolicy");
 
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
