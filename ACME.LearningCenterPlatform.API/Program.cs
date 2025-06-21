@@ -59,8 +59,8 @@ builder.Services.AddSwaggerGen(options =>
         new OpenApiInfo
         {
             Title = "ACME.LearningCenterPlatform.API",
-            Version = "v1",
-            Description = "ACME Learning Center Platform API",
+            Version = "v2",
+            Description = "ACME Learning Center Platform API V2",
             TermsOfService = new Uri("https://acme-learning.com/tos"),
             Contact = new OpenApiContact
             {

@@ -37,10 +37,4 @@
       <Folder Include="Publishing\Interfaces\REST\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
 </Project>
