@@ -2,25 +2,22 @@ using ACME.LearningCenterPlatform.API.Publishing.Domain.Model.ValueObjects;
 
 namespace ACME.LearningCenterPlatform.API.Publishing.Domain.Model.Entities;
 
-public class VideoAsset: Asset
+/// <summary>
+///     Represents a video asset in the ACME Learning Center Platform.
+/// </summary>
+public class VideoAsset : Asset
 {
-    public VideoAsset() : base(EAssetsType.Video)
+    public VideoAsset() : base(EAssetType.Video)
     {
         VideoUri = null;
     }
 
-    public VideoAsset(string videoUri) : base(EAssetsType.Video)
+    public VideoAsset(string videoUrl) : base(EAssetType.Video)
     {
-        VideoUri = new Uri(videoUri);
+        VideoUri = new Uri(videoUrl);
     }
-    
-    public Uri? VideoUri { get; }
 
+    public Uri? VideoUri { get; private set; }
     public override bool Readable => false;
     public override bool Viewable => true;
-
-    public override string GetContent()
-    {
-        return VideoUri != null ? VideoUri.AbsoluteUri : string.Empty;
-    }
 }

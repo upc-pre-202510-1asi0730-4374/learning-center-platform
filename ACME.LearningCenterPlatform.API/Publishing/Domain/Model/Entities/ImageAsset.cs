@@ -2,21 +2,24 @@ using ACME.LearningCenterPlatform.API.Publishing.Domain.Model.ValueObjects;
 
 namespace ACME.LearningCenterPlatform.API.Publishing.Domain.Model.Entities;
 
-public class ImageAsset: Asset
+/// <summary>
+///     Represents an image asset in the ACME Learning Center Platform.
+/// </summary>
+public class ImageAsset : Asset
 {
-    public ImageAsset() : base(EAssetsType.Image)
+    public ImageAsset() : base(EAssetType.Image)
     {
-        ImageUri = null;
     }
 
-    public ImageAsset(string imageUrl) : base(EAssetsType.Image)
+    public ImageAsset(string imageUrl) : base(EAssetType.Image)
     {
         ImageUri = new Uri(imageUrl);
     }
-    
+
     public Uri? ImageUri { get; }
 
     public override bool Readable => false;
+
     public override bool Viewable => true;
 
     public override string GetContent()
