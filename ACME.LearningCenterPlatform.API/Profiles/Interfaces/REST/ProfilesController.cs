@@ -11,12 +11,16 @@ namespace ACME.LearningCenterPlatform.API.Profiles.Interfaces.REST;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-[SwaggerTag("Available Profile Endpoints")]
+[SwaggerTag("Available Profile Endpoints.")]
 public class ProfilesController(
-    IProfileQueryService  profileQueryService,
-    IProfileCommandService profileCommandService) : ControllerBase
+    IProfileCommandService profileCommandService,
+    IProfileQueryService profileQueryService)
+: ControllerBase
 {
     [HttpGet("{profileId:int}")]
+    [SwaggerOperation("Get Profile by Id", "Get a profile by its unique identifier.", OperationId = "GetProfileById")]
+    [SwaggerResponse(200, "The profile was found and returned.", typeof(ProfileResource))]
+    [SwaggerResponse(404, "The profile was not found.")]
     public async Task<IActionResult> GetProfileById(int profileId)
     {
         var getProfileByIdQuery = new GetProfileByIdQuery(profileId);
@@ -27,6 +31,9 @@ public class ProfilesController(
     }
 
     [HttpPost]
+    [SwaggerOperation("Create Profile", "Create a new profile.", OperationId = "CreateProfile")]
+    [SwaggerResponse(201, "The profile was created.", typeof(ProfileResource))]
+    [SwaggerResponse(400, "The profile was not created.")]
     public async Task<IActionResult> CreateProfile(CreateProfileResource resource)
     {
         var createProfileCommand = CreateProfileCommandFromResourceAssembler.ToCommandFromResource(resource);
@@ -34,5 +41,17 @@ public class ProfilesController(
         if (profile is null) return BadRequest();
         var profileResource = ProfileResourceFromEntityAssembler.ToResourceFromEntity(profile);
         return CreatedAtAction(nameof(GetProfileById), new { profileId = profile.Id }, profileResource);
+    }
+
+    [HttpGet]
+    [SwaggerOperation("Get All Profiles", "Get all profiles.", OperationId = "GetAllProfiles")]
+    [SwaggerResponse(200, "The profiles were found and returned.", typeof(IEnumerable<ProfileResource>))]
+    [SwaggerResponse(404, "The profiles were not found.")]
+    public async Task<IActionResult> GetAllProfiles()
+    {
+        var getAllProfilesQuery = new GetAllProfilesQuery();
+        var profiles = await profileQueryService.Handle(getAllProfilesQuery);
+        var profileResources = profiles.Select(ProfileResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(profileResources);
     }
 }
