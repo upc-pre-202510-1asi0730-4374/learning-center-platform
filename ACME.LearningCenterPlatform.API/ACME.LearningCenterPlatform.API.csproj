@@ -10,12 +10,12 @@
     <ItemGroup>
         <!-- Audit Trails related packages -->
         <PackageReference Include="EntityFrameworkCore.CreatedUpdatedDate" Version="8.0.0" />
-
+        
         <!-- Entity Framework Core related packages -->
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational.Design" Version="1.1.6" />
-
+        
         <!-- MySQL Entity Framework Core related packages -->
         <PackageReference Include="MySql.EntityFrameworkCore" Version="9.0.3" />
 
@@ -29,11 +29,20 @@
         
         <!-- Mediator pattern related packages -->
         <PackageReference Include="Cortex.Mediator" Version="1.6.1" />
-        
+
+        <!-- BCrypt Encription related packages -->
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+
+        <!-- JSON Web Token related packages -->
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.12.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="IAM\" />
+      <Folder Include="IAM\Domain\Model\Commands\" />
+      <Folder Include="IAM\Interfaces\" />
       <Folder Include="Publishing\Interfaces\REST\" />
     </ItemGroup>
 
