@@ -41,8 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="IAM\Interfaces\REST\Resources\" />
-      <Folder Include="IAM\Interfaces\REST\Transform\" />
       <Folder Include="Publishing\Interfaces\REST\" />
     </ItemGroup>
 
