@@ -41,8 +41,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="IAM\Domain\Model\Commands\" />
-      <Folder Include="IAM\Interfaces\" />
+      <Folder Include="IAM\Interfaces\REST\Resources\" />
+      <Folder Include="IAM\Interfaces\REST\Transform\" />
       <Folder Include="Publishing\Interfaces\REST\" />
     </ItemGroup>
 

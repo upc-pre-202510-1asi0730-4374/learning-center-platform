@@ -1,3 +1,5 @@
+using ACME.LearningCenterPlatform.API.IAM.Infrastructure.Pipeline.Middleware.Extensions;
+using ACME.LearningCenterPlatform.API.IAM.Infrastructure.Tokens.JWT.Configuration;
 using ACME.LearningCenterPlatform.API.Profiles.Application.Internal.CommandServices;
 using ACME.LearningCenterPlatform.API.Profiles.Application.Internal.QueryServices;
 using ACME.LearningCenterPlatform.API.Profiles.Domain.Repositories;
@@ -117,6 +119,9 @@ builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IProfileCommandService, ProfileCommandService>();
 builder.Services.AddScoped<IProfileQueryService, ProfileQueryService>();
 
+// IAM Bounded Context Dependency Injection Configuration
+builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+
 // Mediator Configuration
 
 // Add Mediator Injection Configuration
@@ -153,6 +158,8 @@ if (app.Environment.IsDevelopment())
 
 // Apply CORS Policy
 app.UseCors("AllowAllPolicy");
+
+app.UseRequestAuthorization();
 
 app.UseHttpsRedirection();
 

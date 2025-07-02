@@ -1,9 +1,9 @@
-using System.Net;
 using ACME.LearningCenterPlatform.API.IAM.Application.Internal.OutboundServices;
 using ACME.LearningCenterPlatform.API.IAM.Domain.Model.Queries;
 using ACME.LearningCenterPlatform.API.IAM.Domain.Services;
+using ACME.LearningCenterPlatform.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 
-namespace ACME.LearningCenterPlatform.API.IAM.Infrastructure.Pipeline.Middleware.Attributes.Components;
+namespace ACME.LearningCenterPlatform.API.IAM.Infrastructure.Pipeline.Middleware.Components;
 
 public class RequestAuthorizationMiddleware(RequestDelegate next)
 {

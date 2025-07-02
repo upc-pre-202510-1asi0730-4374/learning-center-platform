@@ -4,7 +4,7 @@ namespace ACME.LearningCenterPlatform.API.IAM.Domain.Model.Aggregates;
 
 public class User(string username, string passwordHash)
 {
-    public User() : this(string.Empty, string.Empty)
+    public User() : this(String.Empty, String.Empty)
     {
     }
     
@@ -23,4 +23,5 @@ public class User(string username, string passwordHash)
         PasswordHash = passwordHash;
         return this;
     }
+    
 }

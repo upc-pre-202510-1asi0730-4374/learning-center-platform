@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ACME.LearningCenterPlatform.API.IAM.Application.Internal.OutboundServices;
@@ -53,7 +52,7 @@ public class TokenService(IOptions<TokenSettings> tokenSettings) : ITokenService
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero
             });
-            var jwtToken = tokenValidationResult.SecurityToken as JwtSecurityToken;
+            var jwtToken = tokenValidationResult.SecurityToken as JsonWebToken;
             var userId = int.Parse(jwtToken.Claims.First(c=> c.Type == ClaimTypes.Sid).Value);
             return userId;
         }
